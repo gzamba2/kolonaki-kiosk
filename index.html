@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1.0,
+             maximum-scale=1.0,
+             user-scalable=no,
+             viewport-fit=cover"
+  >
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <title>KOLONAKI KIOSK</title>
+
+  <style>
+    :root {
+      /*
+        Ύψος της επάνω μπάρας του Google Apps Script
+        που θέλουμε να κρύψουμε.
+      */
+      --google-banner-height: 40px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+    }
+
+    #kiosk-wrapper {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+
+      /* Fallback */
+      height: 100vh;
+
+      /* Σύγχρονα Android browsers */
+      height: 100dvh;
+
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    #kiosk-frame {
+      position: absolute;
+
+      /*
+        Μετακινούμε ολόκληρο το Apps Script προς τα πάνω,
+        ώστε η Google Apps Script banner να βρίσκεται
+        εκτός του ορατού παραθύρου.
+      */
+      top: calc(-1 * var(--google-banner-height));
+
+      left: 0;
+
+      width: 100%;
+
+      /* Fallback */
+      height: calc(100vh + var(--google-banner-height));
+
+      /* Σύγχρονα Android browsers */
+      height: calc(100dvh + var(--google-banner-height));
+
+      margin: 0;
+      padding: 0;
+      border: 0;
+
+      display: block;
+      background: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="kiosk-wrapper">
+
+    <iframe
+      id="kiosk-frame"
+      src="https://script.google.com/macros/s/AKfycbwU7k6AWp1xj2aYipobJgiabMiHmm24Qt92DrjOQFelwDX4JTbq2XoChrUVueU9TKv1Mg/exec"
+      allow="clipboard-read; clipboard-write; fullscreen"
+      allowfullscreen
+    ></iframe>
+
+  </div>
+
+</body>
+</html>
