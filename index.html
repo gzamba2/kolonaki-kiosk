@@ -1,66 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-  >
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-
-  <title>KOLONAKI KIOSK</title>
-
+  <title>ΙΑΤΡΙΚΟ ΙΣΤΟΡΙΚΟ ΚΑΙ ΔΗΛΩΣΗ GDPR</title>
   <style>
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #ffffff;
-    }
-
-    body {
-      position: fixed;
-      inset: 0;
-      overscroll-behavior: none;
-      touch-action: manipulation;
-    }
-
-    #kolonaki-kiosk {
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      width: 100%;
-
-      height: 100%;
-      height: 100dvh;
-
-      margin: 0;
-      padding: 0;
-
-      border: 0;
-      outline: 0;
-
-      display: block;
-
-      background: #ffffff;
-    }
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff}
+    #kolonakiApp{display:block;width:100%;height:100%;border:0;background:#fff}
   </style>
 </head>
-
 <body>
-
   <iframe
-    id="kolonaki-kiosk"
+    id="kolonakiApp"
+    title="ΙΑΤΡΙΚΟ ΙΣΤΟΡΙΚΟ ΚΑΙ ΔΗΛΩΣΗ GDPR"
     src="https://script.google.com/macros/s/AKfycbwU7k6AWp1xj2aYipobJgiabMiHmm24Qt92DrjOQFelwDX4JTbq2XoChrUVueU9TKv1Mg/exec"
-    allow="fullscreen; clipboard-read; clipboard-write"
-    referrerpolicy="no-referrer-when-downgrade"
+    allow="clipboard-read; clipboard-write"
   ></iframe>
 
+  <script>
+    (() => {
+      const app = document.getElementById('kolonakiApp');
+      const HOME_URL = app.src;
+
+      function returnToKolonakiHome() {
+        // Reloading the outer Apps Script frontend guarantees that any nested
+        // Medical History / GDPR iframe is destroyed and the language menu is shown.
+        app.src = 'about:blank';
+        requestAnimationFrame(() => {
+          app.src = HOME_URL;
+        });
+      }
+
+      window.addEventListener('message', (event) => {
+        const data = event.data;
+
+        const isKolonakiObject = data && typeof data === 'object' && (
+          data.type === 'KOLONAKI_FORM_SUBMITTED' ||
+          data.type === 'KOLONAKI_KIOSK_NAVIGATION'
+        );
+
+        const isKolonakiString =
+          data === 'KOLONAKI_CANCELLED' ||
+          data === 'KOLONAKI_COMPLETED';
+
+        const isLegacy =
+          data === 'MEDICLINIC_FORM_SUBMITTED' ||
+          (data && typeof data === 'object' && data.type === 'MEDICLINIC_FORM_SUBMITTED');
+
+        if (!(isKolonakiObject || isKolonakiString || isLegacy)) return;
+
+        if (isKolonakiObject) {
+          const action = String(data.action || '').toLowerCase();
+          if (!['cancelled','cancel','completed','complete'].includes(action)) return;
+        }
+
+        returnToKolonakiHome();
+      });
+    })();
+  </script>
 </body>
 </html>
